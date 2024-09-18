@@ -1,15 +1,16 @@
-# app.py
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def home():
-    return "Homepage"
+    # This will render the index.html file from the templates folder
+    return render_template('index.html')
 
 @app.route('/contact', methods=['GET'])
 def contact():
-    return "Contact page"
-    
+    # This will render the contact.html file from the templates folder
+    return render_template('contact.html')
+
 if __name__ == "__main__":
-    app.run() | Source: Genelify.com 
+    app.run()
