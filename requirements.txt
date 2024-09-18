@@ -1,4 +1,5 @@
 Flask==2.0.1
 numpy
 scikit-learn
-pickle5
+pickle5==0.0.11
+
