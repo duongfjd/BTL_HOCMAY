@@ -1,5 +1,4 @@
 Flask
 scikit-learn
-numpy
-pandas == 1.0.1
-scipy == 1.4.1
+pandas
+scipy
