@@ -1,10 +1,163 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Homepage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boston Housing Price Prediction</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .result-box {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .img-container {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Homepage!</h1>
-    <p>This is the homepage of my Flask app.</p>
+
+    <div class="container">
+        <h2 class="text-center mb-4">Boston Housing - Dự đoán giá nhà trung bình trong khu vực Boston</h2>
+
+        <div class="row">
+            <div class="col-md-6">
+                <form action="/predict" method="POST">
+                    <div class="row">
+                        <!-- CRIM -->
+                        <div class="col-md-6 mb-3">
+                            <label for="crim" class="form-label">CRIM:</label>
+                            <input type="number" class="form-control" name="crim" step="any" required value="{{ crim }}">
+                        </div>
+                        
+                        <!-- ZN -->
+                        <div class="col-md-6 mb-3">
+                            <label for="zn" class="form-label">ZN:</label>
+                            <input type="number" class="form-control" name="zn" step="any" required value="{{ zn }}">
+                        </div>
+
+                        <!-- INDUS -->
+                        <div class="col-md-6 mb-3">
+                            <label for="indus" class="form-label">INDUS:</label>
+                            <input type="number" class="form-control" name="indus" step="any" required value="{{ indus }}">
+                        </div>
+
+                        <!-- CHAS -->
+                        <div class="col-md-6 mb-3">
+                            <label for="chas" class="form-label">CHAS (0 or 1):</label>
+                            <input type="number" class="form-control" name="chas" min="0" max="1" required value="{{ chas }}">
+                        </div>
+
+                        <!-- NOX -->
+                        <div class="col-md-6 mb-3">
+                            <label for="nox" class="form-label">NOX:</label>
+                            <input type="number" class="form-control" name="nox" step="any" required value="{{ nox }}">
+                        </div>
+
+                        <!-- RM -->
+                        <div class="col-md-6 mb-3">
+                            <label for="rm" class="form-label">RM:</label>
+                            <input type="number" class="form-control" name="rm" step="any" required value="{{ rm }}">
+                        </div>
+
+                        <!-- AGE -->
+                        <div class="col-md-6 mb-3">
+                            <label for="age" class="form-label">AGE:</label>
+                            <input type="number" class="form-control" name="age" step="any" required value="{{ age }}">
+                        </div>
+
+                        <!-- DIS -->
+                        <div class="col-md-6 mb-3">
+                            <label for="dis" class="form-label">DIS:</label>
+                            <input type="number" class="form-control" name="dis" step="any" required value="{{ dis }}">
+                        </div>
+
+                        <!-- RAD -->
+                        <div class="col-md-6 mb-3">
+                            <label for="rad" class="form-label">RAD:</label>
+                            <input type="number" class="form-control" name="rad" required value="{{ rad }}">
+                        </div>
+
+                        <!-- TAX -->
+                        <div class="col-md-6 mb-3">
+                            <label for="tax" class="form-label">TAX:</label>
+                            <input type="number" class="form-control" name="tax" step="any" required value="{{ tax }}">
+                        </div>
+
+                        <!-- PTRATIO -->
+                        <div class="col-md-6 mb-3">
+                            <label for="ptratio" class="form-label">PTRATIO:</label>
+                            <input type="number" class="form-control" name="ptratio" step="any" required value="{{ ptratio }}">
+                        </div>
+
+                        <!-- B -->
+                        <div class="col-md-6 mb-3">
+                            <label for="b" class="form-label">B:</label>
+                            <input type="number" class="form-control" name="b" step="any" required value="{{ b }}">
+                        </div>
+
+                        <!-- LSTAT -->
+                        <div class="col-md-6 mb-3">
+                            <label for="lstat" class="form-label">LSTAT:</label>
+                            <input type="number" class="form-control" name="lstat" step="any" required value="{{ lstat }}">
+                        </div>
+
+                        <!-- Select Model -->
+                        <div class="col-md-12 mb-4">
+                            <label for="model" class="form-label">Select Model:</label>
+                            <select class="form-select" name="model" required>
+                                <option value="Linear Regression" {% if model_name == "Linear Regression" %}selected{% endif %}>Linear Regression</option>
+                                <option value="Ridge Regression" {% if model_name == "Ridge Regression" %}selected{% endif %}>Ridge Regression</option>
+                                <option value="Neural Network" {% if model_name == "Neural Network" %}selected{% endif %}>Neural Network</option>
+                                <option value="Stacking" {% if model_name == "Stacking" %}selected{% endif %}>Stacking</option>
+                            </select>
+                        </div>
+
+                        <!-- Predict Button -->
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-success w-100">Predict</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Prediction Results -->
+            <div class="col-md-6">
+                <div class="result-box">
+                    <!-- Display prediction results -->
+                    <h4><strong>{{ prediction_text }}</strong></h4>
+                    <!-- Display R² score -->
+                    <h5><strong>{{ r2_text }}</strong></h5>
+                    <!-- Display MAE -->
+                    <h5><strong>{{ mae_text }}</strong></h5>
+                    <!-- Display RMSE -->
+                    <h5><strong>{{ rmse_text }}</strong></h5>
+                    <!-- Display NSE -->
+                    <h5><strong>{{ nse_text }}</strong></h5>
+
+                    <!-- Display plot if available -->
+                    <div class="img-container">
+                        <img src="{{ url_for('static', filename=loss_image) }}" alt="Training Loss Curve" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
