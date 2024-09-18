@@ -1,6 +1,6 @@
 Flask
-numpy==1.19.5
-pandas==1.3.5
+numpy
+pandas
 scikit-learn
 matplotlib
 werkzeug==2.1.2
