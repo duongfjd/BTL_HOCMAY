@@ -24,6 +24,11 @@
         }
         .img-container {
             margin-top: 20px;
+            text-align: center; /* Căn giữa hình ảnh */
+        }
+        .img-fluid {
+            max-width: 100%; /* Đảm bảo hình ảnh không vượt quá chiều rộng của khối chứa */
+            height: auto; /* Đảm bảo tỷ lệ hình ảnh được giữ nguyên */
         }
     </style>
 </head>
@@ -56,7 +61,7 @@
 
                         <!-- CHAS -->
                         <div class="col-md-6 mb-3">
-                            <label for="chas" class="form-label">CHAS (0 or 1):</label>
+                            <label for="chas" class="form-label">CHAS (0 hoặc 1):</label>
                             <input type="number" class="form-control" name="chas" min="0" max="1" required value="{{ chas }}">
                         </div>
 
@@ -92,7 +97,6 @@
 
                         <!-- TAX -->
                         <div class="col-md-6 mb-3">
-                           
                             <label for="tax" class="form-label">TAX:</label>
                             <input type="number" class="form-control" name="tax" step="any" required value="{{ tax }}">
                         </div>
@@ -115,20 +119,21 @@
                             <input type="number" class="form-control" name="lstat" step="any" required value="{{ lstat }}">
                         </div>
 
-                        <!-- Select Model -->
+                        <!-- Chọn Mô Hình -->
                         <div class="col-md-12 mb-4">
-                            <label for="model" class="form-label">Select Model:</label>
+                            <label for="model" class="form-label">Chọn Mô Hình:</label>
                             <select class="form-select" name="model" required>
-                                <option value="Linear Regression" {% if model_name == "Linear Regression" %}selected{% endif %}>Linear Regression</option>
-                                <option value="Ridge Regression" {% if model_name == "Ridge Regression" %}selected{% endif %}>Ridge Regression</option>
-                                <option value="Neural Network" {% if model_name == "Neural Network" %}selected{% endif %}>Neural Network</option>
+                                <option value="Linear Regression" {% if model_name == "Linear Regression" %}selected{% endif %}>Hồi quy tuyến tính</option>
+                                <option value="Ridge Regression" {% if model_name == "Ridge Regression" %}selected{% endif %}>Hồi quy Ridge</option>
+                                <option value="Neural Network" {% if model_name == "Neural Network" %}selected{% endif %}>Mạng nơ-ron MLP</option>
                                 <option value="Stacking" {% if model_name == "Stacking" %}selected{% endif %}>Stacking</option>
                             </select>
+                            
                         </div>
 
-                        <!-- Predict Button -->
+                        <!-- Nút Dự Đoán -->
                         <div class="col-md-12">
-                            <button type="submit" class="btn btn-success w-100">Predict</button>
+                            <button type="submit" class="btn btn-success w-100">Dự Đoán</button>
                         </div>
                     </div>
                 </form>
@@ -150,16 +155,76 @@
 
                     <!-- Hiển thị đồ thị nếu có -->
                     <div class="img-container">
-                        <!-- Đường dẫn đến hình ảnh sẽ được Flask thay thế -->
-                        <img src="{{ url_for('static', filename=loss_image) }}" alt="Training Loss Curve" class="img-fluid">
+                        {% if model_name == "Linear Regression" %}
+                            <img src="{{ url_for('static', filename='linear_regression_test.png') }}" alt="Linear Regression: Biểu đồ phân tán giá trị thực tế và giá trị dự đoán" class="img-fluid">
+                        {% elif model_name == "Ridge Regression" %}
+                            <img src="{{ url_for('static', filename='ridge_regression_test.png') }}" alt="Ridge Regression: Biểu đồ phân tán giá trị thực tế và giá trị dự đoán" class="img-fluid">
+                        {% elif model_name == "Neural Network" %}
+                            <img src="{{ url_for('static', filename='mlp_test.png') }}" alt="MLP Neural Network: Biểu đồ phân tán giá trị thực tế và giá trị dự đoán" class="img-fluid">
+                        {% elif model_name == "Stacking" %}
+                            <img src="{{ url_for('static', filename='stacking_test.png') }}" alt="Stacking Model: Biểu đồ phân tán giá trị thực tế và giá trị dự đoán" class="img-fluid">
+                        {% endif %}
                     </div>
                 </div>
-            </div>
+                            <form method="A" action="/show_details">
+                            
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-success w-100" onclick="showDetails(); return false;">Chi tiết</button>
+                                </div>
+                            </form>
+                
+                          
+                           
         </div>
     </div>
+                
 
+    <div class="row mt-4" id="details" style="display: none;">
+        <div class="col-md-12">
+            {% if model_name == "Linear Regression" %}
+            <div class="row mt-4"> 
+    <img src="{{ url_for('static', filename='linear_regression_test.png') }}" alt="" class="img-fluid col-4">
+    <img src="{{ url_for('static', filename='linear_regression_train.png') }}" alt="" class="img-fluid col-4">
+    <img src="{{ url_for('static', filename='linear_regression_validation.png') }}" alt="" class="img-fluid col-4">
+            </div>
+    <img src="{{ url_for('static', filename='Linear_Regression_results.png') }}" alt="" class="img-fluid col-md-12 w-50 d-block mx-auto">
+
+    {% elif model_name == "Ridge Regression" %}
+    <div class="row mt-4"> 
+    <img src="{{ url_for('static', filename='ridge_regression_train.png') }}" alt="" class="img-fluid col-4">
+    <img src="{{ url_for('static', filename='ridge_regression_validation.png') }}" alt="" class="img-fluid col-4">
+    <img src="{{ url_for('static', filename='ridge_regression_test.png') }}" alt="" class="img-fluid col-4">
+        </div>
+    <img src="{{ url_for('static', filename='Ridge_Regression_results.png') }}" alt="" class="img-fluid col-md-12 w-50 d-block mx-auto">
+    
+    {% elif model_name == "Neural Network" %}
+    <div class="row mt-4"> 
+    <img src="{{ url_for('static', filename='mlp_train.png') }}" alt="" class="img-fluid col-4">
+    <img src="{{ url_for('static', filename='mlp_validation.png') }}" alt="" class="img-fluid col-4">
+    <img src="{{ url_for('static', filename='mlp_test.png') }}" alt="" class="img-fluid col-4">
+         </div>
+    <img src="{{ url_for('static', filename='MLP_results.png') }}" alt="" class="img-fluid col-md-12 w-50 d-block mx-auto">
+    
+    {% elif model_name == "Stacking" %}
+    <div class="row mt-4"> 
+    <img src="{{ url_for('static', filename='stacking_train.png') }}" alt="" class="img-fluid col-4">
+    <img src="{{ url_for('static', filename='stacking_validation.png') }}" alt="" class="img-fluid col-4">
+    <img src="{{ url_for('static', filename='stacking_test.png') }}" alt="" class="img-fluid col-4">
+        </div>
+    <img src="{{ url_for('static', filename='Stacking_results.png') }}" alt="" class="img-fluid col-md-12 w-50 d-block mx-auto">
+             {% endif %}
+        </div>
+</div>
+</div>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script>
+        function showDetails() {
+            // Tìm phần tử chứa ảnh và hiển thị nó
+            var details = document.getElementById('details');
+            details.style.display = 'block';
+        }
+    </script>
+    
 </body>
 </html>
