@@ -1,6 +1,0 @@
-Flask
-numpy
-pandas
-scikit-learn
-matplotlib
-werkzeug==2.1.2
