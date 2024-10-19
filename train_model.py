@@ -11,9 +11,7 @@ import pickle
 # Load data
 data = pd.read_csv('BostonHousing.csv')
 
-print("Checking for missing values...")
-print(data.isnull().sum())
-data = data.dropna()
+
 
 X = data.drop('medv', axis=1).values
 y = data['medv'].values
