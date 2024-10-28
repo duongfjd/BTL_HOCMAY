@@ -11,8 +11,10 @@ import pickle
 # Load data
 data = pd.read_csv('BostonHousing.csv')
 
-
-
+print("Checking for missing values...")
+print(data.isnull().sum())
+data['rm'].fillna(data['rm'].median(), inplace=True)
+print(data.isnull().sum())
 X = data.drop('medv', axis=1).values
 y = data['medv'].values
 
@@ -24,13 +26,14 @@ X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, r
 lr = LinearRegression()
 ridge = Ridge()
 mlp = MLPRegressor( 
-    hidden_layer_sizes=best_params['(50, 50, 50)'],
-    activation=best_params['relu'],
-    solver=best_params['lbfgs'],
-    alpha=best_params['10'],
-    max_iter=best_params['500'],
+    hidden_layer_sizes=(50, 50, 50),
+    activation='relu',
+    solver='lbfgs',
+    alpha=10,
+    max_iter=500,
     random_state=42
 )
+
 stacking = StackingRegressor(estimators=[('lr', lr), ('ridge', ridge), ('mlp', mlp)])
 
 # Train models
