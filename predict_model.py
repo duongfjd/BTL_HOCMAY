@@ -14,7 +14,7 @@ def nse(observed, predicted):
 # Hàm load các mô hình và dữ liệu kiểm tra
 def load_models_and_data():
     with open('lr_model.pkl', 'rb') as f:
-        lr, lr_stderr = pickle.load(f)
+        lr = pickle.load(f)
     with open('ridge_model.pkl', 'rb') as f:
         ridge = pickle.load(f)
     with open('mlp_model.pkl', 'rb') as f:
@@ -31,12 +31,12 @@ def load_models_and_data():
     X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
     X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
     
-    return lr, lr_stderr, ridge, mlp, stacking,X_train, y_train, X_val, y_val, X_test, y_test
+    return lr, ridge, mlp, stacking,X_train, y_train, X_val, y_val, X_test, y_test
 
 # Hàm dự đoán giá trị và đánh giá
 def predict(model_name, features):
     # Load all models and data
-    lr, lr_stderr, ridge, mlp, stacking, X_train, y_train, X_val, y_val, X_test, y_test = load_models_and_data()
+    lr, ridge, mlp, stacking, X_train, y_train, X_val, y_val, X_test, y_test = load_models_and_data()
     
     # Prepare data for evaluation
     X_test_single = np.array(features).reshape(1, -1)
@@ -149,7 +149,7 @@ def create_and_save_table(model_name, y_train_pred, y_val_pred, y_test_pred, y_t
     plt.close()
 
 # Load mô hình và dữ liệu
-lr, lr_stderr, ridge, mlp, stacking, X_train, y_train, X_val, y_val, X_test, y_test = load_models_and_data()
+lr, ridge, mlp, stacking, X_train, y_train, X_val, y_val, X_test, y_test = load_models_and_data()
 
 # Đánh giá mô hình Hồi quy tuyến tính
 y_train_pred_lr, r2_train_lr, mae_train_lr, rmse_train_lr, nse_train_lr = evaluate_model(lr, X_train, y_train)
