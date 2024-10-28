@@ -13,7 +13,7 @@ def nse(observed, predicted):
 
 # Hàm load các mô hình và dữ liệu kiểm tra
 def load_models_and_data():
-    with open('lr_model_with_stderr.pkl', 'rb') as f:
+    with open('lr_model.pkl', 'rb') as f:
         lr, lr_stderr = pickle.load(f)
     with open('ridge_model.pkl', 'rb') as f:
         ridge = pickle.load(f)
