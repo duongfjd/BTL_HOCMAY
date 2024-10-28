@@ -37,7 +37,7 @@ def predict_price():
         # Tạo danh sách các đặc trưng để dự đoán
         features = np.array([[crim, zn, indus, chas, nox, rm, age, dis, rad, tax, ptratio, b, lstat]])
         # Tải các mô hình và dữ liệu
-        lr, lr_stderr, ridge, mlp, stacking, X_train, y_train, X_val, y_val, X_test, y_test = load_models_and_data()
+        lr, ridge, mlp, stacking, X_train, y_train, X_val, y_val, X_test, y_test = load_models_and_data()
         # Chọn mô hình dựa trên model_name
         if model_name == 'Linear Regression':
             model = lr
@@ -56,10 +56,10 @@ def predict_price():
         # Trả về trang index với kết quả dự đoán và các chỉ số khác
         return render_template('index.html',
                                prediction_text=f'Predicted MEDV: {prediction:.2f}',
-                               r2_text=f'R² = {r2:.2f}',
-                               mae_text=f'MAE = {mae:.2f}',
-                               rmse_text=f'RMSE = {rmse:.2f}',
-                               nse_text=f'NSE = {nse_value:.2f}',
+                               r2_text=f'R² (test set) = {r2:.2f}',
+                               mae_text=f'MAE (test set) = {mae:.2f}',
+                               rmse_text=f'RMSE (test set) = {rmse:.2f}',
+                               nse_text=f'NSE (test set) = {nse_value:.2f}',
                                loss_image=loss_image,
                                crim=crim, zn=zn, indus=indus, chas=chas, nox=nox,
                                rm=rm, age=age, dis=dis, rad=rad, tax=tax,
