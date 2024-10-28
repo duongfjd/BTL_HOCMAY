@@ -23,7 +23,14 @@ X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, r
 # Define models
 lr = LinearRegression()
 ridge = Ridge()
-mlp = MLPRegressor(max_iter=1000, random_state=42)
+mlp = MLPRegressor( 
+    hidden_layer_sizes=best_params['(50, 50, 50)'],
+    activation=best_params['relu'],
+    solver=best_params['lbfgs'],
+    alpha=best_params['10'],
+    max_iter=best_params['500'],
+    random_state=42
+)
 stacking = StackingRegressor(estimators=[('lr', lr), ('ridge', ridge), ('mlp', mlp)])
 
 # Train models
