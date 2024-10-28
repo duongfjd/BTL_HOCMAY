@@ -4,3 +4,4 @@ pandas
 werkzeug
 scikit-learn
 matplotlib
+gunicorn
